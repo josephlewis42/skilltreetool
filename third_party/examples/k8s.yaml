@@ -1,0 +1,82 @@
+footer: Made by marco alano & STEPH PIPER - MAKERQUEEN AU
+row:
+  "0":
+  - Install and configure kubectl
+  - Deploy a local Kubernetes cluster e.g. minikube, kind
+  - Check Pod logs
+  - Deploy a Hello, World Pod
+  - Explore your cluster with `kubectl get all`
+  - Log into a Pod with `kubectl exec`
+  - Create and organize namespaces
+  "1":
+  - Filter resources using selectors
+  - Apply labels to organize resources
+  - Expose a Deployment using a Service
+  - Use a Secret to distribute credentials
+  - Deploy a stateless app
+  - Expose a Pod using a Service
+  - Edit a resource with `kubectl edit`
+  "2":
+  - Set resource requests and limits for workloads
+  - Explore the Kubernetes Tutorials
+  - Connect to a Pod with `kubectl port-forward`
+  - Perform rolling updates and rollbacks
+  - Deploy Wordpress and MySQL with Persistent Volumes
+  - Scale a workload manually
+  - Manage configuration data with ConfigMaps
+  "3":
+  - Run a workload on every node with a Daemonset
+  - Use an image from a private container repository
+  - Deploy tools for your personal use on the cluster
+  - Explore kubectl's "Troubleshooting" section
+  - Set up health check probes on your workloads
+  - Set up two workloads that communicate
+  - Autoscale a Deployment
+  "4":
+  - Set up a CI/CD pipeline that deploys to the cluster
+  - Bring your own tools with `kubectl debug`
+  - Route traffic to different workloads with Ingress
+  - Configure a Deployment for high availability updates
+  - Create a container from your app
+  - Install an app using Helm
+  - Create a multi-container Pod
+  "5":
+  - Set up a cluster from scratch on Raspberry Pis
+  - Try an alternative to kubectl like K9s
+  - Control scheduling with tolerations and affinity
+  - Create a Helm chart for your app
+  - Schedule a task with a CronJobs
+  - Install the Kubernetes Dashboard
+  - Deploy a non-HTTP workload e.g. FTP server
+  "6":
+  - Manually upgrade a cluster
+  - Explore the Kubernetes Reference Guide
+  - Run apps for a club on a cluster
+  - Optimize your workload container sizes
+  - Set up ServiceAccounts for your workloads
+  - Deploy a cluster in the cloud
+  - Create a Job to run a one-off task.
+  "7":
+  - Monitor your cluster's health
+  - Use Kubernetes API directly
+  - Host apps on the Internet from your cluster
+  - Use kubectl events to investigate changes
+  - Configure Role-Based Access Control (RBAC)
+  - Set up cluster-wide logging and monitoring
+  - Set up alerting for unhealthy workloads
+  "8":
+  - Contribute to the Kubernetes community
+  - Use headless Services for service discovery
+  - Learn how to backup and restore your cluster
+  - Make your cluster reproducible with Terraform
+  - Create your own custom admission controller
+  - Share your cluster with a second person
+  - Use Service Mesh for advanced networking and security
+  "9":
+  - Configure your cluster for high availability
+  - Deploy a service mesh to your cluster
+  - Optimize resource usage of your workloads
+  - Develop your own operator and CRDs
+  - Enforce security using Pod Security Admission
+title: kubernetes
+

@@ -1,0 +1,1 @@
+This template is adapted from https://github.com/schme16/MakerSkillTree-Generator/tree/main
