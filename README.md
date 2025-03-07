@@ -56,4 +56,4 @@ compiled to WASM to run in the browser.
 
 Code licensed under the Apache 2.0 License: [LICENSE](LICENSE)
 
-The skill tree format is CC-BY-SA
+Resources in [third_party](third_party) are under their own licenses.
