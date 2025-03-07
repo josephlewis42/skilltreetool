@@ -18,7 +18,7 @@ func SVG2Yaml(svg string) string {
 
 	yamlBytes, err := yaml.Marshal(converted)
 	if err != nil {
-		return fmt.Sprintf("couldn't convert to YAML: %w", err)
+		return fmt.Sprintf("couldn't convert to YAML: %s", err)
 	}
 
 	return string(yamlBytes)
