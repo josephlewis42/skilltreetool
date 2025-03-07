@@ -41,6 +41,9 @@ skilltreetool svg2yaml input.svg output.yaml
 
 # Convert SVG to YAML, output directly in the console
 skilltreetool svg2yaml input.svg -
+
+# [BETA] Diff two trees and output a Keep A Changelog style changelog
+skilltreetool diff original.svg new.svg
 ```
 
 ## Scope and future

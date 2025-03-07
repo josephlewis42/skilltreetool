@@ -23,6 +23,15 @@ type Skill struct {
 	Text string
 }
 
+func (skill *Skill) RowCol() RowCol {
+	return RowCol{Row: skill.Row, Col: skill.Col}
+}
+
+type RowCol struct {
+	Row int
+	Col int
+}
+
 type Converter interface {
 	ToGeneric() *SkillTree
 }

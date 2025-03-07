@@ -68,7 +68,7 @@ func NewFromSVG(svgBytes []byte) (*SkillTree, error) {
 
 	var inner SkillTreeSVG
 	if err := xml.Unmarshal(svgBytes, &inner); err != nil {
-		return nil, fmt.Errorf("couldn't decode SVG: %w", err)
+		return nil, fmt.Errorf("invalid XML: %w", err)
 	}
 
 	if inner.Json == nil {
