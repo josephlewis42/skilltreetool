@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/josephlewis42/skilltreetool/pkg/commands"
 	"github.com/josephlewis42/skilltreetool/pkg/models/official"
 	"github.com/josephlewis42/skilltreetool/pkg/models/skilltreegenerator"
 	"github.com/urfave/cli/v3"
@@ -106,6 +107,51 @@ func yaml2svg() *cli.Command {
 	}
 }
 
+func diff() *cli.Command {
+	var beforePath string
+	var afterPath string
+
+	return &cli.Command{
+		Name:      "diff",
+		Usage:     "Create a markdown diff between two SVG files.",
+		ArgsUsage: "BEFORE AFTER",
+		Category:  "BETA",
+
+		Arguments: []cli.Argument{
+			&cli.StringArg{Name: "BEFORE_SVG", Destination: &beforePath, UsageText: "The original file", Min: 1, Max: 1},
+			&cli.StringArg{Name: "AFTER_SVG", Destination: &afterPath, UsageText: "The new file", Min: 1, Max: 1},
+		},
+		Action: func(ctx context.Context, cmd *cli.Command) error {
+			// TODO: Support YAML here too
+
+			beforeBytes, err := os.ReadFile(beforePath)
+			if err != nil {
+				return fmt.Errorf("couldn't read file %s: %w", beforePath, err)
+			}
+
+			before, err := skilltreegenerator.NewFromSVG(beforeBytes)
+			if err != nil {
+				return fmt.Errorf("couldn't decode embedded data in SVG: %w", err)
+			}
+
+			afterBytes, err := os.ReadFile(afterPath)
+			if err != nil {
+				return fmt.Errorf("couldn't read file %s: %w", afterPath, err)
+			}
+
+			after, err := skilltreegenerator.NewFromSVG(afterBytes)
+			if err != nil {
+				return fmt.Errorf("couldn't decode SVG: %w", err)
+			}
+
+			diff := commands.Diff(before.ToGeneric(), after.ToGeneric())
+
+			fmt.Fprintln(cmd.Writer, diff.ToMarkdown())
+			return nil
+		},
+	}
+}
+
 func main() {
 	cmd := &cli.Command{
 		Usage:   "Convert between Maker Skill Tree formats",
@@ -113,9 +159,9 @@ func main() {
 		Commands: []*cli.Command{
 			svg2yaml(),
 			yaml2svg(),
+			diff(),
 
 			// TODO: Add the following features
-			// diff -- difference between old and new in a KeepAChangelog format
 			// sync -- sync all the files in a directory (translation, SVG, YAML)
 			// TODO: Figure out how to handle versioning of SVGs
 			// generateSVGs
