@@ -34,11 +34,13 @@ Examples:
 
 ```sh
 # Convert YAML to SVG format:
-skilltreetool yaml2svg /path/to/yaml /path/to/svg/output
+skilltreetool yaml2svg input.yaml output.svg
 
 # Convert SVG to YAML format:
-skilltreetool svg2yaml /path/to/svg /path/to/yaml/output
+skilltreetool svg2yaml input.svg output.yaml
 
+# Convert SVG to YAML, output directly in the console
+skilltreetool svg2yaml input.svg -
 ```
 
 ## Scope and future
