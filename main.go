@@ -21,7 +21,7 @@ func svg2yaml() *cli.Command {
 	return &cli.Command{
 		Name:      "svg2yaml",
 		Usage:     "Convert a SkillTreeGenerator SVG file to the Maker Skill Tree YAML format.",
-		ArgsUsage: "SVG_FILE",
+		ArgsUsage: "SVG_FILE_IN YAML_FILE_OUT",
 		Arguments: []cli.Argument{
 			&cli.StringArg{Name: "SVG_FILE", Destination: &path, UsageText: "Path to the SkillTreeGenerator SVG", Min: 1, Max: 1},
 			&cli.StringArg{Name: "YAML_FILE", Destination: &outPath, UsageText: "Path to write to or - for stdout", Min: 1, Max: 1},
@@ -45,10 +45,10 @@ func svg2yaml() *cli.Command {
 			}
 
 			writer := cmd.Writer
-			if path != "-" {
-				fd, err := os.OpenFile(path, os.O_CREATE, 0700)
+			if outPath != "-" {
+				fd, err := os.Create(outPath)
 				if err != nil {
-					return fmt.Errorf("couldn't open file %q: %w", path, err)
+					return fmt.Errorf("couldn't create file %q: %w", outPath, err)
 				}
 				defer fd.Close()
 				writer = fd
@@ -62,13 +62,15 @@ func svg2yaml() *cli.Command {
 
 func yaml2svg() *cli.Command {
 	var path string
+	var outPath string
 
 	return &cli.Command{
 		Name:      "yaml2svg",
 		Usage:     "Convert a Maker Skill Tree YAML file to an SVG that can be edited in SkillTreeGenerator.",
-		ArgsUsage: "YAML_FILE",
+		ArgsUsage: "YAML_FILE_IN SVG_FILE_OUT",
 		Arguments: []cli.Argument{
-			&cli.StringArg{Name: "YAML_FILE", Destination: &path, UsageText: "Path to the Maker Skill Tree YAML file", Max: 1},
+			&cli.StringArg{Name: "YAML_FILE", Destination: &path, UsageText: "Path to the Maker Skill Tree YAML file", Min: 1, Max: 1},
+			&cli.StringArg{Name: "SVG_FILE", Destination: &outPath, UsageText: "Path to write to or - for stdout", Min: 1, Max: 1},
 		},
 		Action: func(ctx context.Context, cmd *cli.Command) error {
 			fileBytes, err := os.ReadFile(path)
@@ -88,7 +90,17 @@ func yaml2svg() *cli.Command {
 				return fmt.Errorf("couldn't generate SVG: %w", err)
 			}
 
-			fmt.Fprintln(cmd.Writer, data)
+			writer := cmd.Writer
+			if outPath != "-" {
+				fd, err := os.Create(outPath)
+				if err != nil {
+					return fmt.Errorf("couldn't create file %q: %w", outPath, err)
+				}
+				defer fd.Close()
+				writer = fd
+			}
+
+			fmt.Fprintln(writer, data)
 			return nil
 		},
 	}

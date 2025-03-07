@@ -12,7 +12,7 @@ automating common tasks so maintainers can focus on community engagement, conten
 Install using `go`:
 
 ```bash
-go install github.com/josephlewis42/skilltreetool
+go install github.com/josephlewis42/skilltreetool@latest
 ```
 
 Or, build the tool locally:
