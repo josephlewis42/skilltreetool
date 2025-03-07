@@ -1,11 +1,18 @@
 VERSION?=v0.0.0
 
 .PHONY: all
-all: skilltreetool wasm
+all: build wasm test
+
+.PHONY: build
+build: build-dir skilltreetool
 
 .PHONY: skilltreetool
 skilltreetool: build-dir
 	go build -ldflags "-X main.version=$(VERSION)" -o build/skilltreetool main.go
+
+.PHONY: test
+test:
+	go test -cover ./...
 
 .PHONY: wasm
 wasm:
