@@ -3,7 +3,9 @@ package commands
 import (
 	"bytes"
 	"fmt"
+	"math"
 
+	"github.com/hbollon/go-edlib"
 	"github.com/josephlewis42/skilltreetool/pkg/models/generic"
 )
 
@@ -74,6 +76,31 @@ func Diff(before, after *generic.SkillTree) *SkillTreeDiff {
 		needsMatch[skill.Text] = skill.RowCol()
 	}
 
+	var remainingKeys []string
+	for key := range needsMatch {
+		remainingKeys = append(remainingKeys, key)
+	}
+
+	for _, afterText := range remainingKeys {
+		bestMatchDistance := math.MaxInt
+		bestMatch := ""
+
+		for beforeText := range beforeSkills {
+			if distance := edlib.LevenshteinDistance(beforeText, afterText); distance < bestMatchDistance {
+				bestMatch = beforeText
+				bestMatchDistance = distance
+			}
+		}
+
+		// Values here are best estimates.
+		if bestMatch != "" && (bestMatchDistance < 5 || float32(bestMatchDistance) < .25*float32(len(afterText))) {
+			delete(beforeSkills, bestMatch)
+			delete(needsMatch, afterText)
+
+			diff.Changed = append(diff.Changed, fmt.Sprintf("%q to %q", bestMatch, afterText))
+		}
+	}
+
 	for key := range beforeSkills {
 		diff.Removed = append(diff.Removed, key)
 	}
@@ -82,8 +109,5 @@ func Diff(before, after *generic.SkillTree) *SkillTreeDiff {
 		diff.Added = append(diff.Added, key)
 	}
 
-	// TODO: Use edit distance to find similar skills and mark them as changed.
-
 	return &diff
-
 }

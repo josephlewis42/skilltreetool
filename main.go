@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/josephlewis42/skilltreetool/pkg/commands"
+	"github.com/josephlewis42/skilltreetool/pkg/models"
 	"github.com/josephlewis42/skilltreetool/pkg/models/official"
 	"github.com/josephlewis42/skilltreetool/pkg/models/skilltreegenerator"
 	"github.com/urfave/cli/v3"
@@ -113,38 +114,24 @@ func diff() *cli.Command {
 
 	return &cli.Command{
 		Name:      "diff",
-		Usage:     "Create a markdown diff between two SVG files.",
+		Usage:     "Create a markdown diff between two skill tree files.",
 		ArgsUsage: "BEFORE AFTER",
-		Category:  "BETA",
-
 		Arguments: []cli.Argument{
-			&cli.StringArg{Name: "BEFORE_SVG", Destination: &beforePath, UsageText: "The original file", Min: 1, Max: 1},
-			&cli.StringArg{Name: "AFTER_SVG", Destination: &afterPath, UsageText: "The new file", Min: 1, Max: 1},
+			&cli.StringArg{Name: "BEFORE", Destination: &beforePath, UsageText: "The original file", Min: 1, Max: 1},
+			&cli.StringArg{Name: "AFTER", Destination: &afterPath, UsageText: "The new file", Min: 1, Max: 1},
 		},
 		Action: func(ctx context.Context, cmd *cli.Command) error {
-			// TODO: Support YAML here too
-
-			beforeBytes, err := os.ReadFile(beforePath)
+			before, err := models.LoadFromFile(beforePath)
 			if err != nil {
 				return fmt.Errorf("couldn't read file %s: %w", beforePath, err)
 			}
 
-			before, err := skilltreegenerator.NewFromSVG(beforeBytes)
-			if err != nil {
-				return fmt.Errorf("couldn't decode embedded data in SVG: %w", err)
-			}
-
-			afterBytes, err := os.ReadFile(afterPath)
+			after, err := models.LoadFromFile(afterPath)
 			if err != nil {
 				return fmt.Errorf("couldn't read file %s: %w", afterPath, err)
 			}
 
-			after, err := skilltreegenerator.NewFromSVG(afterBytes)
-			if err != nil {
-				return fmt.Errorf("couldn't decode SVG: %w", err)
-			}
-
-			diff := commands.Diff(before.ToGeneric(), after.ToGeneric())
+			diff := commands.Diff(before, after)
 
 			fmt.Fprintln(cmd.Writer, diff.ToMarkdown())
 			return nil
