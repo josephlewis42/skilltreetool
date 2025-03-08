@@ -44,7 +44,7 @@ func NewFromYaml(yamlBytes []byte) (*SkillTree, error) {
 	var out SkillTree
 
 	if err := yaml.Unmarshal(yamlBytes, &out); err != nil {
-		return nil, fmt.Errorf("couldn't decode YAML: %w", err)
+		return nil, fmt.Errorf("decoding error: %w", err)
 	}
 
 	return &out, nil
