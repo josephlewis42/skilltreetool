@@ -11,3 +11,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Commands to convert between YAML and SVG.
 - Command to generate a `diff` between two skill trees in a Keep a Changelog style format.
+- Created a Vue.js frontend that can be deployed to GitHub pages.

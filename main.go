@@ -8,10 +8,7 @@ import (
 
 	"github.com/josephlewis42/skilltreetool/pkg/commands"
 	"github.com/josephlewis42/skilltreetool/pkg/models"
-	"github.com/josephlewis42/skilltreetool/pkg/models/official"
-	"github.com/josephlewis42/skilltreetool/pkg/models/skilltreegenerator"
 	"github.com/urfave/cli/v3"
-	"sigs.k8s.io/yaml"
 )
 
 var version = "0.0.0"
@@ -29,35 +26,22 @@ func svg2yaml() *cli.Command {
 			&cli.StringArg{Name: "YAML_FILE", Destination: &outPath, UsageText: "Path to write to or - for stdout", Min: 1, Max: 1},
 		},
 		Action: func(ctx context.Context, cmd *cli.Command) error {
-			fileBytes, err := os.ReadFile(path)
+			input, err := os.ReadFile(path)
 			if err != nil {
 				return fmt.Errorf("couldn't read file %s: %w", path, err)
 			}
 
-			decoded, err := skilltreegenerator.NewFromSVG(fileBytes)
-			if err != nil {
-				return fmt.Errorf("couldn't decode embedded data in SVG: %w", err)
-			}
-
-			officialTree := official.NewFromGeneric(decoded.ToGeneric())
-
-			converted, err := yaml.Marshal(officialTree)
-			if err != nil {
-				return fmt.Errorf("couldn't convert to YAML: %w", err)
-			}
-
-			writer := cmd.Writer
+			output := cmd.Writer
 			if outPath != "-" {
 				fd, err := os.Create(outPath)
 				if err != nil {
 					return fmt.Errorf("couldn't create file %q: %w", outPath, err)
 				}
 				defer fd.Close()
-				writer = fd
+				output = fd
 			}
 
-			fmt.Fprintln(writer, string(converted))
-			return nil
+			return commands.SVG2Yaml(input, output)
 		},
 	}
 }
@@ -75,35 +59,22 @@ func yaml2svg() *cli.Command {
 			&cli.StringArg{Name: "SVG_FILE", Destination: &outPath, UsageText: "Path to write to or - for stdout", Min: 1, Max: 1},
 		},
 		Action: func(ctx context.Context, cmd *cli.Command) error {
-			fileBytes, err := os.ReadFile(path)
+			input, err := os.ReadFile(path)
 			if err != nil {
 				return fmt.Errorf("couldn't read file %s: %w", path, err)
 			}
 
-			official, err := official.NewFromYaml(fileBytes)
-			if err != nil {
-				return fmt.Errorf("couldn't decode embedded data in SVG: %w", err)
-			}
-
-			svg := skilltreegenerator.NewFromGeneric(official.ToGeneric())
-
-			data, err := svg.ToSVG()
-			if err != nil {
-				return fmt.Errorf("couldn't generate SVG: %w", err)
-			}
-
-			writer := cmd.Writer
+			output := cmd.Writer
 			if outPath != "-" {
 				fd, err := os.Create(outPath)
 				if err != nil {
 					return fmt.Errorf("couldn't create file %q: %w", outPath, err)
 				}
 				defer fd.Close()
-				writer = fd
+				output = fd
 			}
 
-			fmt.Fprintln(writer, data)
-			return nil
+			return commands.Yaml2SVG(input, output)
 		},
 	}
 }

@@ -19,6 +19,10 @@ func LoadFromFile(name string) (*generic.SkillTree, error) {
 	return LoadFromBytes(bytes)
 }
 
+func LoadFromString(data string) (*generic.SkillTree, error) {
+	return LoadFromBytes([]byte(data))
+}
+
 func LoadFromBytes(data []byte) (*generic.SkillTree, error) {
 	var errs []error
 
