@@ -1,10 +1,10 @@
 VERSION?=v0.0.0
 
 .PHONY: all
-all: build wasm test frontend
+all: build test 
 
 .PHONY: build
-build: build-dir skilltreetool
+build: build-dir skilltreetool frontend
 
 .PHONY: skilltreetool
 skilltreetool: build-dir
@@ -20,7 +20,7 @@ wasm:
 	cp "$(shell go env GOROOT)/misc/wasm/wasm_exec.js" build/wasm_exec.js
 
 .PHONY: frontend
-frontend: build-dir
+frontend: build-dir wasm
 	cd frontend; yarn build
 	mv frontend/dist build/frontend
 
