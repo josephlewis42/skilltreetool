@@ -21,6 +21,7 @@ wasm:
 
 .PHONY: frontend
 frontend: build-dir wasm
+	cd frontend; yarn install
 	cd frontend; yarn build
 	mv frontend/dist build/frontend
 
