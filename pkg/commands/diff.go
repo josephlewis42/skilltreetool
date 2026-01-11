@@ -10,14 +10,24 @@ import (
 	"github.com/josephlewis42/skilltreetool/pkg/models/generic"
 )
 
+type ChangeList []string
+
+func (cl *ChangeList) Add(text string) {
+	*cl = append(*cl, fmt.Sprintf("%q", text))
+}
+
+func (cl *ChangeList) Addf(format string, args ...any) {
+	*cl = append(*cl, fmt.Sprintf(format, args...))
+}
+
 type SkillTreeDiff struct {
-	Added []string
+	Added ChangeList
 
-	Changed []string
+	Changed ChangeList
 
-	Removed []string
+	Removed ChangeList
 
-	Moved []string
+	Moved ChangeList
 }
 
 func (diff *SkillTreeDiff) ToMarkdown() string {
@@ -40,7 +50,8 @@ func (diff *SkillTreeDiff) ToMarkdown() string {
 		}
 
 		for _, item := range section.Data {
-			fmt.Fprintf(out, "- %q\n", item)
+			// Items will already be quoted.
+			fmt.Fprintf(out, "- %s\n", item)
 		}
 
 		fmt.Fprintln(out)
@@ -80,7 +91,7 @@ func Diff(before, after *generic.SkillTree) *SkillTreeDiff {
 				// Same position, no change.
 				continue
 			} else {
-				diff.Moved = append(diff.Moved, cleanedText)
+				diff.Moved.Add(cleanedText)
 				continue
 			}
 		}
@@ -109,16 +120,16 @@ func Diff(before, after *generic.SkillTree) *SkillTreeDiff {
 			delete(beforeSkills, bestMatch)
 			delete(needsMatch, afterText)
 
-			diff.Changed = append(diff.Changed, fmt.Sprintf("%q to %q", bestMatch, afterText))
+			diff.Changed.Addf("%q to %q", bestMatch, afterText)
 		}
 	}
 
 	for key := range beforeSkills {
-		diff.Removed = append(diff.Removed, key)
+		diff.Removed.Add(key)
 	}
 
 	for key := range needsMatch {
-		diff.Added = append(diff.Added, key)
+		diff.Added.Add(key)
 	}
 
 	return &diff
