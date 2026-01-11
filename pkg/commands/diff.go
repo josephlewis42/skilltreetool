@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"math"
+	"regexp"
 
 	"github.com/hbollon/go-edlib"
 	"github.com/josephlewis42/skilltreetool/pkg/models/generic"
@@ -48,6 +49,14 @@ func (diff *SkillTreeDiff) ToMarkdown() string {
 	return out.String()
 }
 
+var (
+	whitespaceRegex = regexp.MustCompile(`\s+`)
+)
+
+func collapseWhitespace(in string) string {
+	return whitespaceRegex.ReplaceAllString(in, " ")
+}
+
 // Diff creates a diff between two skill trees.
 func Diff(before, after *generic.SkillTree) *SkillTreeDiff {
 	var diff SkillTreeDiff
@@ -55,25 +64,28 @@ func Diff(before, after *generic.SkillTree) *SkillTreeDiff {
 	beforeSkills := make(map[string]generic.RowCol)
 
 	for _, skill := range before.Skills {
-		beforeSkills[skill.Text] = skill.RowCol()
+		cleanedText := collapseWhitespace(skill.Text)
+		beforeSkills[cleanedText] = skill.RowCol()
 	}
 
 	needsMatch := make(map[string]generic.RowCol)
 
 	for _, skill := range after.Skills {
+		cleanedText := collapseWhitespace(skill.Text)
+
 		// If skill is in beforeSkills, skip it
-		if beforePos, ok := beforeSkills[skill.Text]; ok {
-			delete(beforeSkills, skill.Text)
+		if beforePos, ok := beforeSkills[cleanedText]; ok {
+			delete(beforeSkills, cleanedText)
 			if beforePos == skill.RowCol() {
 				// Same position, no change.
 				continue
 			} else {
-				diff.Moved = append(diff.Moved, skill.Text)
+				diff.Moved = append(diff.Moved, cleanedText)
 				continue
 			}
 		}
 
-		needsMatch[skill.Text] = skill.RowCol()
+		needsMatch[cleanedText] = skill.RowCol()
 	}
 
 	var remainingKeys []string
